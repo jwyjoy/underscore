@@ -152,11 +152,29 @@
     return memo;
   };
 
+
+
+// -----------------------------------------------------------------
+// 14/08/05  kono 担当
+//
+// ここから
+
+/*
+find_.find(list, predicate, [context]) Alias: detect
+
+var even = _.find([1, 2, 3, 4, 5, 6], function(num){ return num % 2 == 0; });
+=> 2
+*/
   // Return the first value which passes a truth test. Aliased as `detect`.
   _.find = _.detect = function(obj, predicate, context) {
     var result;
+    // anyなんてものが出てきた
+    //
     any(obj, function(value, index, list) {
+      // げ、callでてきた
       if (predicate.call(context, value, index, list)) {
+        // function(num){ return num % 2 == 0; }
+        // contextは基本省略されたもんだと思って
         result = value;
         return true;
       }
@@ -164,25 +182,59 @@
     return result;
   };
 
+
+/*
+filter_.filter(list, predicate, [context]) Alias: select
+
+var evens = _.filter([1, 2, 3, 4, 5, 6], function(num){ return num % 2 == 0; });
+=> [2, 4, 6]
+ */
   // Return all the elements that pass a truth test.
   // Delegates to **ECMAScript 5**'s native `filter` if available.
   // Aliased as `select`.
   _.filter = _.select = function(obj, predicate, context) {
+
     var results = [];
     if (obj == null) return results;
     if (nativeFilter && obj.filter === nativeFilter) return obj.filter(predicate, context);
+    // バリってる
+
+    // each ->  _.each(list, iterator, [context])
     each(obj, function(value, index, list) {
-      if (predicate.call(context, value, index, list)) results.push(value);
+      if ( predicate.call( context, value, index, list)) results.push(value);
     });
+
     return results;
   };
 
+
+/*
+reject_.reject(list, predicate, [context])
+
+var odds = _.reject([1, 2, 3, 4, 5, 6], function(num){ return num % 2 == 0; });
+=> [1, 3, 5]
+ */
   // Return all the elements for which a truth test fails.
   _.reject = function(obj, predicate, context) {
+
     return _.filter(obj, function(value, index, list) {
+
+      // でたcall
       return !predicate.call(context, value, index, list);
+      // ん？
+
     }, context);
+    // こういう時にはcontext渡してあげるべきなんだね
+
   };
+
+
+
+// ここまで
+//
+// -----------------------------------------------------------------
+
+
 
   // Determine whether all of the elements match a truth test.
   // Delegates to **ECMAScript 5**'s native `every` if available.
@@ -203,13 +255,22 @@
   // Aliased as `any`.
   var any = _.some = _.any = function(obj, predicate, context) {
     predicate || (predicate = _.identity);
+    //       ん？
+
     var result = false;
     if (obj == null) return result;
+    // ここはおｋ
+
+    // someは配列の任意の要素に対して、指定されたコールバック関数が true を返すかどうかを判定する
     if (nativeSome && obj.some === nativeSome) return obj.some(predicate, context);
+
+    // var each = _.each = _.forEach = function(obj, iterator, context) {
     each(obj, function(value, index, list) {
       if (result || (result = predicate.call(context, value, index, list))) return breaker;
     });
+
     return !!result;
+    //  ん？
   };
 
   // Determine if the array or object contains a given value (using `===`).
@@ -1021,6 +1082,8 @@
     return obj === Object(obj);
   };
 
+
+// ------------>
   // Add some isType methods: isArguments, isFunction, isString, isNumber, isDate, isRegExp.
   each(['Arguments', 'Function', 'String', 'Number', 'Date', 'RegExp'], function(name) {
     _['is' + name] = function(obj) {
