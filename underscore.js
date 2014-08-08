@@ -236,6 +236,7 @@ var odds = _.reject([1, 2, 3, 4, 5, 6], function(num){ return num % 2 == 0; });
 
 
 
+  // ---> @kosuki
   // Determine whether all of the elements match a truth test.
   // Delegates to **ECMAScript 5**'s native `every` if available.
   // Aliased as `all`.
@@ -273,6 +274,7 @@ var odds = _.reject([1, 2, 3, 4, 5, 6], function(num){ return num % 2 == 0; });
     //  ん？
   };
 
+  // ---> @takano
   // Determine if the array or object contains a given value (using `===`).
   // Aliased as `include`.
   _.contains = _.include = function(obj, target) {
@@ -283,6 +285,7 @@ var odds = _.reject([1, 2, 3, 4, 5, 6], function(num){ return num % 2 == 0; });
     });
   };
 
+  // ---> @takahashi
   // Invoke a method (with arguments) on every item in a collection.
   _.invoke = function(obj, method) {
     var args = slice.call(arguments, 2);
@@ -292,23 +295,27 @@ var odds = _.reject([1, 2, 3, 4, 5, 6], function(num){ return num % 2 == 0; });
     });
   };
 
+  // ---> @takahashi
   // Convenience version of a common use case of `map`: fetching a property.
   _.pluck = function(obj, key) {
     return _.map(obj, _.property(key));
   };
 
+  // ---> @takahashi
   // Convenience version of a common use case of `filter`: selecting only objects
   // containing specific `key:value` pairs.
   _.where = function(obj, attrs) {
     return _.filter(obj, _.matches(attrs));
   };
 
+  // ---> @takahashi
   // Convenience version of a common use case of `find`: getting the first object
   // containing specific `key:value` pairs.
   _.findWhere = function(obj, attrs) {
     return _.find(obj, _.matches(attrs));
   };
 
+  // ---> @kono
   // Return the maximum element or (element-based computation).
   // Can't optimize arrays of integers longer than 65,535 elements.
   // See [WebKit Bug 80797](https://bugs.webkit.org/show_bug.cgi?id=80797)
@@ -327,6 +334,7 @@ var odds = _.reject([1, 2, 3, 4, 5, 6], function(num){ return num % 2 == 0; });
     return result;
   };
 
+  // ---> @kono
   // Return the minimum element (or element-based computation).
   _.min = function(obj, iterator, context) {
     if (!iterator && _.isArray(obj) && obj[0] === +obj[0] && obj.length < 65535) {
@@ -343,6 +351,7 @@ var odds = _.reject([1, 2, 3, 4, 5, 6], function(num){ return num % 2 == 0; });
     return result;
   };
 
+  // ---> @jang
   // Shuffle an array, using the modern version of the
   // [Fisher-Yates shuffle](http://en.wikipedia.org/wiki/Fisher–Yates_shuffle).
   _.shuffle = function(obj) {
@@ -357,6 +366,7 @@ var odds = _.reject([1, 2, 3, 4, 5, 6], function(num){ return num % 2 == 0; });
     return shuffled;
   };
 
+  // ---> @fadlil
   // Sample **n** random values from a collection.
   // If **n** is not specified, returns a single random element.
   // The internal `guard` argument allows it to work with `map`.
