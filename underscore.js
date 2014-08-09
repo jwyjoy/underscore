@@ -286,32 +286,75 @@ var odds = _.reject([1, 2, 3, 4, 5, 6], function(num){ return num % 2 == 0; });
   };
 
   // ---> @takahashi
+  // _.invoke(list, methodName, [*arguments])
+  //
+  // _.invoke([[5, 1, 7], [3, 2, 1]], 'sort');
+  // => [[1, 5, 7], [1, 2, 3]]
+  //
   // Invoke a method (with arguments) on every item in a collection.
+  // 渡したオブジェクトの要素に指定したメソッドを実行させる
+  // 実は3つ目以降にも引数を渡せる その場合は method の引数となる
+  // obj の要素の一つを value とすると
+  // value.method(args) という感じ
   _.invoke = function(obj, method) {
+    // http://www.tohoho-web.com/js/array.htm#slice
     var args = slice.call(arguments, 2);
+    // _.isFunction は引数を関数かどうか判定する
     var isFunc = _.isFunction(method);
     return _.map(obj, function(value) {
+      // 例えば value = [3,2,1], method = 'sort'の場合
+      // 'sort' は文字列だから isFunc は false になる
+      // なので value[method] になる value[method].apply(value, args);
+      // さらに value[method] は [3,2,1]["sort"]
+      // これは [3,2,1].sort と同義
+      // つまり [3,2,1].sort.apply([3,2,1], args);
+      //
+      // http://www.ajaxtower.jp/js/object/index4.html
       return (isFunc ? method : value[method]).apply(value, args);
     });
   };
 
+  // argumentsについて
+  // まず arguments は関数を定義したときに自動的に定義されるオブジェクト
+  // 引数を [obj, method] という形で持つ
+  // 引数として定義している以上に引数を渡すと超過分は切り捨てられるが、arguments は超過分も持つ
+  // 配列に姿形は酷似しているが、ただのlengthプロパティを持つオブジェクト
+
+
   // ---> @takahashi
   // Convenience version of a common use case of `map`: fetching a property.
+  //
+  // オブジェクトの指定したプロパティの値を返す
+  // ただの_.mapのラッパー
   _.pluck = function(obj, key) {
+    // _.property はデフォルトで定義されているイテレーター
+    //
+    // _.property ->
+    // function(obj) {
+    //   return obj[key];
+    // };
     return _.map(obj, _.property(key));
   };
 
   // ---> @takahashi
   // Convenience version of a common use case of `filter`: selecting only objects
   // containing specific `key:value` pairs.
+  //
+  // 対象の配列から条件に合う要素を抽出して配列として返す
+  // ただの_.filterのラッパー
   _.where = function(obj, attrs) {
+    // _.filter は条件に合うオブジェクトの要素を全て返す
     return _.filter(obj, _.matches(attrs));
   };
 
   // ---> @takahashi
   // Convenience version of a common use case of `find`: getting the first object
   // containing specific `key:value` pairs.
+  //
+  // _.where は条件に合う全てを返すのに対し、findWhere は最初の一つだけを返す
+  // ただの_.findのラッパー
   _.findWhere = function(obj, attrs) {
+    // _.find は条件に合うオブジェクトの要素を１つだけ返す
     return _.find(obj, _.matches(attrs));
   };
 
@@ -1095,8 +1138,16 @@ var odds = _.reject([1, 2, 3, 4, 5, 6], function(num){ return num % 2 == 0; });
 
 // ------------>
   // Add some isType methods: isArguments, isFunction, isString, isNumber, isDate, isRegExp.
+  // is系のメソッドをまとめて定義している
   each(['Arguments', 'Function', 'String', 'Number', 'Date', 'RegExp'], function(name) {
+    // オブジェクトのプロパティにアクセスする方法は2種類
+    // 1. obj.property
+    // 2. obj["property"]
+    //
+    // 2つ目を用いることで"文字列"を使ってプロパティにアクセス出来る
     _['is' + name] = function(obj) {
+      // obj.toStringと同等
+      // オブジェクトの種類をチェック
       return toString.call(obj) == '[object ' + name + ']';
     };
   });
@@ -1157,6 +1208,7 @@ var odds = _.reject([1, 2, 3, 4, 5, 6], function(num){ return num % 2 == 0; });
     return this;
   };
 
+  // デフォルトで定義されているイテレーター
   // Keep the identity function around for default iterators.
   _.identity = function(value) {
     return value;
@@ -1168,6 +1220,7 @@ var odds = _.reject([1, 2, 3, 4, 5, 6], function(num){ return num % 2 == 0; });
     };
   };
 
+  // オブジェクトから指定プロパティを返すイテレーター
   _.property = function(key) {
     return function(obj) {
       return obj[key];
@@ -1175,6 +1228,10 @@ var odds = _.reject([1, 2, 3, 4, 5, 6], function(num){ return num % 2 == 0; });
   };
 
   // Returns a predicate for checking whether an object has a given set of `key:value` pairs.
+  //
+  // 属性がオブジェクトにマッチするかを返すイテレーター
+  // 属性自体がオブジェクトにマッチするか、
+  // オブジェクトにその属性が含まれていればマッチする
   _.matches = function(attrs) {
     return function(obj) {
       if (obj === attrs) return true; //avoid comparing an object to itself.
