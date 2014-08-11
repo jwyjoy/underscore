@@ -288,12 +288,23 @@ var odds = _.reject([1, 2, 3, 4, 5, 6], function(num){ return num % 2 == 0; });
     //  ん？
   };
 
-  // ---> @takano
+  // ---> @mihyaeru
+  // objにtargetが含まれるかを判定する関数
   // Determine if the array or object contains a given value (using `===`).
   // Aliased as `include`.
   _.contains = _.include = function(obj, target) {
+    // objがnullだったらtargetを含んでいないのは確実なので即false
     if (obj == null) return false;
+
+    // JSの実装側にindexOf関数があり、objがindexOfを呼べるなら
+    // それを使いobj内のtargetのindexを得る
+    // objがobjectとだとindexOfはundefinedになる
+    // 得られなかった場合はobj.indexOf(target)が-1になる
+    // 従ってobj内にtargetが存在すれば真が、なければ偽が返る
     if (nativeIndexOf && obj.indexOf === nativeIndexOf) return obj.indexOf(target) != -1;
+
+    // obj内のいずれかの要素がtargetと===で一致したらtrueが返る
+    // anyはすぐ上に書かれている
     return any(obj, function(value) {
       return value === target;
     });
@@ -423,15 +434,25 @@ var odds = _.reject([1, 2, 3, 4, 5, 6], function(num){ return num % 2 == 0; });
     return shuffled;
   };
 
-  // ---> @fadlil
+  // ---> @fadlil -> @mihyaeru
+  // objから引数n個の要素をランダムに抽出する
   // Sample **n** random values from a collection.
   // If **n** is not specified, returns a single random element.
   // The internal `guard` argument allows it to work with `map`.
   _.sample = function(obj, n, guard) {
+    // nが指定されない場合は要素を1つ返す
+    // guardが存在している時(mapと一緒に使った時)も
     if (n == null || guard) {
+      // objがobject(perlでいうhashの方)なら値だけの配列にする
+      // objectに対しては次のようになるためobjectを判定できる
+      // obj.length => undefined
+      // +obj.length => NaN
       if (obj.length !== +obj.length) obj = _.values(obj);
+      // 要素数-1のindexをランダムに生成し、そのindexの値を返す
       return obj[_.random(obj.length - 1)];
     }
+
+    // objをランダムに並び替えて先頭n個(もしくは1個)を配列で返す
     return _.shuffle(obj).slice(0, Math.max(0, n));
   };
 
