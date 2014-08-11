@@ -236,18 +236,32 @@ var odds = _.reject([1, 2, 3, 4, 5, 6], function(num){ return num % 2 == 0; });
 
 
 
-  // ---> @kosuki
+  /// ---> @kosuki
   // Determine whether all of the elements match a truth test.
   // Delegates to **ECMAScript 5**'s native `every` if available.
   // Aliased as `all`.
+  // それぞれの要素に対して、関数を適用し、すべての要素がtrueであればtrue、そうでなければfalseを返す。
+  //
+  // _.every([1, 2, 3, 4, 5, 6], function(v){ return v % 2 == 0;});
+  // => false
   _.every = _.all = function(obj, predicate, context) {
-    predicate || (predicate = _.identity);
+    //predicateが定義されてなかったら、デフォルトで定義されているイテレーターを使う
+    predicate || (predicate = _.identity); 
+    
     var result = true;
     if (obj == null) return result;
+    
+    // every は、与えられた callback 関数を、配列に含まれる各要素に対して一度ずつ、callback が偽の値を返す要素が見つかるまで呼び出す
+    // 偽の値を返す要素が見つかると、every メソッドはただちに false を返す
     if (nativeEvery && obj.every === nativeEvery) return obj.every(predicate, context);
+    
+    // 配列の各要素に対して関数を実行する
+    // predicate.call(context, value, index, list)の結果が負の時、resultを負にしてループを抜ける
     each(obj, function(value, index, list) {
       if (!(result = result && predicate.call(context, value, index, list))) return breaker;
     });
+    
+    // 二重否定を行って、Boolean型へ変換して返す
     return !!result;
   };
 
