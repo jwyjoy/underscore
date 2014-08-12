@@ -246,21 +246,21 @@ var odds = _.reject([1, 2, 3, 4, 5, 6], function(num){ return num % 2 == 0; });
   // => false
   _.every = _.all = function(obj, predicate, context) {
     //predicateが定義されてなかったら、デフォルトで定義されているイテレーターを使う
-    predicate || (predicate = _.identity); 
-    
+    predicate || (predicate = _.identity);
+
     var result = true;
     if (obj == null) return result;
-    
+
     // every は、与えられた callback 関数を、配列に含まれる各要素に対して一度ずつ、callback が偽の値を返す要素が見つかるまで呼び出す
     // 偽の値を返す要素が見つかると、every メソッドはただちに false を返す
     if (nativeEvery && obj.every === nativeEvery) return obj.every(predicate, context);
-    
+
     // 配列の各要素に対して関数を実行する
     // predicate.call(context, value, index, list)の結果が負の時、resultを負にしてループを抜ける
     each(obj, function(value, index, list) {
       if (!(result = result && predicate.call(context, value, index, list))) return breaker;
     });
-    
+
     // 二重否定を行って、Boolean型へ変換して返す
     return !!result;
   };
@@ -387,14 +387,38 @@ var odds = _.reject([1, 2, 3, 4, 5, 6], function(num){ return num % 2 == 0; });
   // Return the maximum element or (element-based computation).
   // Can't optimize arrays of integers longer than 65,535 elements.
   // See [WebKit Bug 80797](https://bugs.webkit.org/show_bug.cgi?id=80797)
+  //
+  // _.max(list, [iterator], [context])
+  // sample
+  // var stooges = [{name: 'moe',   age: 40},
+  //                {name: 'larry', age: 50},
+  //                {name: 'curly', age: 60}];
+  // _.max(stooges, function(stooge){ return stooge.age; });
+  // => {name: 'curly', age: 60};
   _.max = function(obj, iterator, context) {
+    // minと動きは同じ
     if (!iterator && _.isArray(obj) && obj[0] === +obj[0] && obj.length < 65535) {
       return Math.max.apply(Math, obj);
+      // Math.max() だと、 .max(1,2,3,4,5) と直に入れる必要がとのこと
+      // apply関数を使って第二引数に、maxにlistで渡すことが可能になる
+      //
+      // あと気になったのは、
+      // obj[0] === +obj[0] <- この+
+      //
     }
+
+    // 返り値と、にInfinityを入れる。
     var result = -Infinity, lastComputed = -Infinity;
+    // Infinityとはjsで最大の浮動小数点数を超える数値の定数、グローバルスコープの変数になる
+    // Number.POSITIVE_INFINITY の初期値をとのこと
+
+    // foreach
     each(obj, function(value, index, list) {
+
       var computed = iterator ? iterator.call(context, value, index, list) : value;
+      // iteratorを指定していたらcall
       if (computed > lastComputed) {
+        // あとは定番の処理
         result = value;
         lastComputed = computed;
       }
@@ -404,6 +428,14 @@ var odds = _.reject([1, 2, 3, 4, 5, 6], function(num){ return num % 2 == 0; });
 
   // ---> @kono
   // Return the minimum element (or element-based computation).
+  //
+  // _.min(list, [iterator], [context])
+  // sample
+  // var numbers = [10, 5, 100, 2, 1000];
+  // _.min(numbers);
+  // => 2
+  //
+  // maxと動きは同じ
   _.min = function(obj, iterator, context) {
     if (!iterator && _.isArray(obj) && obj[0] === +obj[0] && obj.length < 65535) {
       return Math.min.apply(Math, obj);
@@ -416,8 +448,10 @@ var odds = _.reject([1, 2, 3, 4, 5, 6], function(num){ return num % 2 == 0; });
         lastComputed = computed;
       }
     });
+
     return result;
   };
+
 
   // ---> @jang
   // Shuffle an array, using the modern version of the
