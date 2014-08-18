@@ -490,6 +490,8 @@ var odds = _.reject([1, 2, 3, 4, 5, 6], function(num){ return num % 2 == 0; });
     return _.shuffle(obj).slice(0, Math.max(0, n));
   };
 
+  // 14/08/19
+  // @kono
   // An internal function to generate lookup iterators.
   var lookupIterator = function(value) {
     if (value == null) return _.identity;
@@ -497,6 +499,8 @@ var odds = _.reject([1, 2, 3, 4, 5, 6], function(num){ return num % 2 == 0; });
     return _.property(value);
   };
 
+  // 14/08/19
+  // @kono
   // Sort the object's values by a criterion produced by an iterator.
   _.sortBy = function(obj, iterator, context) {
     iterator = lookupIterator(iterator);
@@ -517,6 +521,8 @@ var odds = _.reject([1, 2, 3, 4, 5, 6], function(num){ return num % 2 == 0; });
     }), 'value');
   };
 
+  // 14/08/19
+  // @kosuki
   // An internal function used for aggregate "group by" operations.
   var group = function(behavior) {
     return function(obj, iterator, context) {
@@ -530,18 +536,24 @@ var odds = _.reject([1, 2, 3, 4, 5, 6], function(num){ return num % 2 == 0; });
     };
   };
 
+  // 14/08/19
+  // @takano
   // Groups the object's values by a criterion. Pass either a string attribute
   // to group by, or a function that returns the criterion.
   _.groupBy = group(function(result, key, value) {
     _.has(result, key) ? result[key].push(value) : result[key] = [value];
   });
 
+  // 14/08/19
+  // @takano
   // Indexes the object's values by a criterion, similar to `groupBy`, but for
   // when you know that your index values will be unique.
   _.indexBy = group(function(result, key, value) {
     result[key] = value;
   });
 
+  // 14/08/19
+  // @jang
   // Counts instances of an object that group by a certain criterion. Pass
   // either a string attribute to count by, or a function that returns the
   // criterion.
@@ -549,6 +561,8 @@ var odds = _.reject([1, 2, 3, 4, 5, 6], function(num){ return num % 2 == 0; });
     _.has(result, key) ? result[key]++ : result[key] = 1;
   });
 
+  // 14/08/19
+  // @jang
   // Use a comparator function to figure out the smallest index at which
   // an object should be inserted so as to maintain order. Uses binary search.
   _.sortedIndex = function(array, obj, iterator, context) {
