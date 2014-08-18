@@ -558,6 +558,9 @@ var odds = _.reject([1, 2, 3, 4, 5, 6], function(num){ return num % 2 == 0; });
   // either a string attribute to count by, or a function that returns the
   // criterion.
   _.countBy = group(function(result, key) {
+  	//1280 has -> objectが keyを持っていると true : false.
+  	// keyがあるなら result keyを 増やす
+  	// keyがないなら 1にする 
     _.has(result, key) ? result[key]++ : result[key] = 1;
   });
 
@@ -566,11 +569,17 @@ var odds = _.reject([1, 2, 3, 4, 5, 6], function(num){ return num % 2 == 0; });
   // Use a comparator function to figure out the smallest index at which
   // an object should be inserted so as to maintain order. Uses binary search.
   _.sortedIndex = function(array, obj, iterator, context) {
-    iterator = lookupIterator(iterator);
-    var value = iterator.call(context, obj);
+  	//
+  	//_.sortedIndex([10, 20, 30, 40, 50], 35);
+  	//                  array           , obj
+  	// 比較して 
+    iterator = lookupIterator(iterator); // 河野くんが説明してくれるはず！
+    var value = iterator.call(context, obj); // 
     var low = 0, high = array.length;
     while (low < high) {
-      var mid = (low + high) >>> 1;
+      var mid = (low + high) >>> 1; // >>> は　何
+      //とにかくmidを探して valueを比較します。
+      //low==highになったら終わり
       iterator.call(context, array[mid]) < value ? low = mid + 1 : high = mid;
     }
     return low;
