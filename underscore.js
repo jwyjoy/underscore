@@ -524,14 +524,27 @@ var odds = _.reject([1, 2, 3, 4, 5, 6], function(num){ return num % 2 == 0; });
   // 14/08/19
   // @kosuki
   // An internal function used for aggregate "group by" operations.
+  // "グループ化"操作で使用される内部関数
+  // function(obj, iterator, context)の関数を返す
+  // 引数：behaviorも関数
   var group = function(behavior) {
     return function(obj, iterator, context) {
+      // グルーピングした結果を入れる連想配列
       var result = {};
+      
+      // iteratorが関数だったら、iteratorを、
+      // 関数じゃなかったら、function(obj) { return obj[iterator]; }; という関数を返す
       iterator = lookupIterator(iterator);
+      
+      // objの各要素に対して、関数を実行する
       each(obj, function(value, index) {
+        
         var key = iterator.call(context, value, index, obj);
+        
+        // グルーピング
         behavior(result, key, value);
       });
+      
       return result;
     };
   };
