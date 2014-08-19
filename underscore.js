@@ -494,31 +494,56 @@ var odds = _.reject([1, 2, 3, 4, 5, 6], function(num){ return num % 2 == 0; });
   // @kono
   // An internal function to generate lookup iterators.
   var lookupIterator = function(value) {
+    //_.identity ->  デフォルトで定義されているイテレーター
     if (value == null) return _.identity;
+
+    // 問題がなければ、そのまます返す
     if (_.isFunction(value)) return value;
+
+    // オブジェクトから指定プロパティを返すイテレーター
     return _.property(value);
   };
 
   // 14/08/19
   // @kono
+  //
+  // 使い方
+  // _.sortBy(list, iterator, [context])
+  //
+  // 例
+  // _.sortBy([1, 2, 3, 4, 5, 6], function(num){ return Math.sin(num); });
+  // => [5, 4, 6, 3, 1, 2]
+  //
   // Sort the object's values by a criterion produced by an iterator.
   _.sortBy = function(obj, iterator, context) {
+
+    // ↑で説明
     iterator = lookupIterator(iterator);
-    return _.pluck(_.map(obj, function(value, index, list) {
+
+    // オブジェクトの指定したプロパティの値を返す
+    return _.pluck( _.map( obj, function(value, index, list) {
       return {
         value: value,
         index: index,
         criteria: iterator.call(context, value, index, list)
       };
     }).sort(function(left, right) {
+
+      // criteriaがぐぐってもわからんち...
       var a = left.criteria;
       var b = right.criteria;
+
+      // leftが大きければ正 , 後は逆 を返す
       if (a !== b) {
         if (a > b || a === void 0) return 1;
         if (a < b || b === void 0) return -1;
+        // void 0はundefみたいな
       }
+
+      // ん?
       return left.index - right.index;
     }), 'value');
+
   };
 
   // 14/08/19
@@ -531,20 +556,20 @@ var odds = _.reject([1, 2, 3, 4, 5, 6], function(num){ return num % 2 == 0; });
     return function(obj, iterator, context) {
       // グルーピングした結果を入れる連想配列
       var result = {};
-      
+
       // iteratorが関数だったら、iteratorを、
       // 関数じゃなかったら、function(obj) { return obj[iterator]; }; という関数を返す
       iterator = lookupIterator(iterator);
-      
+
       // objの各要素に対して、関数を実行する
       each(obj, function(value, index) {
-        
+
         var key = iterator.call(context, value, index, obj);
-        
+
         // グルーピング
         behavior(result, key, value);
       });
-      
+
       return result;
     };
   };
