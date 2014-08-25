@@ -628,8 +628,14 @@ var odds = _.reject([1, 2, 3, 4, 5, 6], function(num){ return num % 2 == 0; });
 
   // @takahashi
   // Return the number of elements in an object.
+  // 要素数を返す関数
+  // ではなく 配列, 連想配列 のサイズを返す関数
+  // javascript の length は要素数ではなく、 最後のインデックス+1 の値を返すため
   _.size = function(obj) {
+    // obj が null なら 0 を返す
     if (obj == null) return 0;
+    // obj が 配列 ならそのまま length で配列のサイズを返す
+    // obj が 連想配列 なら keys で key の配列を取ってきて、そのサイズを返す
     return (obj.length === +obj.length) ? obj.length : _.keys(obj).length;
   };
 
