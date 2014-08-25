@@ -574,6 +574,7 @@ var odds = _.reject([1, 2, 3, 4, 5, 6], function(num){ return num % 2 == 0; });
     };
   };
 
+
   // 14/08/19
   // @takano
   // Groups the object's values by a criterion. Pass either a string attribute
@@ -599,6 +600,7 @@ var odds = _.reject([1, 2, 3, 4, 5, 6], function(num){ return num % 2 == 0; });
     _.has(result, key) ? result[key]++ : result[key] = 1;
   });
 
+
   // 14/08/19
   // @jang
   // Use a comparator function to figure out the smallest index at which
@@ -614,6 +616,8 @@ var odds = _.reject([1, 2, 3, 4, 5, 6], function(num){ return num % 2 == 0; });
     return low;
   };
 
+
+  // @fad
   // Safely create a real, live array from anything iterable.
   _.toArray = function(obj) {
     if (!obj) return [];
@@ -622,11 +626,13 @@ var odds = _.reject([1, 2, 3, 4, 5, 6], function(num){ return num % 2 == 0; });
     return _.values(obj);
   };
 
+  // @takahashi
   // Return the number of elements in an object.
   _.size = function(obj) {
     if (obj == null) return 0;
     return (obj.length === +obj.length) ? obj.length : _.keys(obj).length;
   };
+
 
   // Array Functions
   // ---------------
