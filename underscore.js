@@ -646,26 +646,57 @@ var odds = _.reject([1, 2, 3, 4, 5, 6], function(num){ return num % 2 == 0; });
   // Get the first element of an array. Passing **n** will return the first N
   // values in the array. Aliased as `head` and `take`. The **guard** check
   // allows it to work with `_.map`.
+  // 渡した配列の最初からn番目の要素を取り出す
+  // n未指定だったら最初の要素だけ取り出す
   _.first = _.head = _.take = function(array, n, guard) {
+    // array に指定が無ければ undefined を返す void 0 == undefined
     if (array == null) return void 0;
+    // n が未指定 または guard が true(何か値が入っていたら) 最初の要素を返す
     if ((n == null) || guard) return array[0];
+    // n が0より小さければ、空の配列を返す
     if (n < 0) return [];
+    // n に指定があり、guard が falseなら、最初からn番目までの配列を返す
     return slice.call(array, 0, n);
   };
+
+  // guardの秘密
+  // guardのチェックが入っているのは、この_.firstが_.mapのイテレータとして使われた場合を想定しているらしい
+  // コードとしては汚いけど、そこは許容
+  //
+  // _.mapのイテレータとして関数が使われた場合、引数として val, key, obj の3つが渡されることになる
+  // ここで問題なのが、_.first の本来求める引数と、_.mapで使われた場合に渡される引数の意味が異なる点にある
+  // 例えば、
+  // var array = [[1,2,3],[4,5,6]];
+  // var array_maped = _.map(array, _.first);
+  // とすると、array_mapedには[1,4]と入ってほしいはず
+  // しかし、guardのチェックが存在しないと結果は
+  // [[], [4]]
+  // こうなる
 
   // Returns everything but the last entry of the array. Especially useful on
   // the arguments object. Passing **n** will return all the values in
   // the array, excluding the last N. The **guard** check allows it to work with
   // `_.map`.
+  // 渡した配列の最後からn個の要素以外を返す
+  // nが未指定なら、最後の要素以外を返す
   _.initial = function(array, n, guard) {
+    // nが未指定 または guard が true なら array.length - 1 なので最後以外
+    // nを指定 かつ guard が false なら array.length - n なので最後からn個の要素以外を返す
     return slice.call(array, 0, array.length - ((n == null) || guard ? 1 : n));
   };
 
   // Get the last element of an array. Passing **n** will return the last N
   // values in the array. The **guard** check allows it to work with `_.map`.
+  // 渡した配列の最後からn番目までの要素を返す
+  // nが未指定なら、最後の要素だけを返す
+  // _.firstの逆版
   _.last = function(array, n, guard) {
+    // array が未指定なら、undefinedを返す
     if (array == null) return void 0;
+    // nが未指定 または guard がtrueなら、最後の要素を返す
     if ((n == null) || guard) return array[array.length - 1];
+    // nに指定があり かつ guard がfalseなら、最後からn番目の要素を返す
+    // Math.max(array.length - n, 0) で負の数を指定することを制限している
     return slice.call(array, Math.max(array.length - n, 0));
   };
 
@@ -673,37 +704,62 @@ var odds = _.reject([1, 2, 3, 4, 5, 6], function(num){ return num % 2 == 0; });
   // Especially useful on the arguments object. Passing an **n** will return
   // the rest N values in the array. The **guard**
   // check allows it to work with `_.map`.
+  // 渡した配列の先頭からn番目の要素を取り除いた配列を返す
+  // nの指定が無い場合は、先頭の要素を取り除いた配列を返す
   _.rest = _.tail = _.drop = function(array, n, guard) {
+    // nが未指定 または guard が true なら先頭の要素を取り除いた配列を返す
     return slice.call(array, (n == null) || guard ? 1 : n);
   };
 
   // Trim out all falsy values from an array.
+  // false、null、0、""、undefined を渡した配列から取り除く
   _.compact = function(array) {
+    // _.filterはプレディケイトでtrueと判断された要素のみを配列として返す
     return _.filter(array, _.identity);
   };
 
   // Internal implementation of a recursive `flatten` function.
+  // _.flatten内部から呼ばれる
   var flatten = function(input, shallow, output) {
+    // input の要素が全て配列 かつ shallow が trueならば
     if (shallow && _.every(input, _.isArray)) {
+      // output.concat(input)
+      // _.flatten から呼ばれる場合、outputは[]になる
+      // つまり空配列[]と、inputを連結した結果を返す
+      // 全部配列ならconcatで連結すれば一次元配列に変換出来るため
       return concat.apply(output, input);
     }
+    // input のどれか一つでも配列では無かった場合
+    // each でまわしながら 配列か、argumentsか、それ以外かで場合分けする
     each(input, function(value) {
+      // value が配列 または arguments なら
       if (_.isArray(value) || _.isArguments(value)) {
+        // shallow がtrueなら output にそのまま valueを突っ込む
+        // shallow がfalseなら flattenを再起的に呼び出す
         shallow ? push.apply(output, value) : flatten(value, shallow, output);
       } else {
+        // それ以外なら value をそのまま output に突っ込む
         output.push(value);
       }
     });
+    // 結果を返す
     return output;
   };
 
   // Flatten out an array, either recursively (by default), or just one level.
+  // 多次元配列を一次元化する
+  // 三次元から二次元に行きたい(願望
   _.flatten = function(array, shallow) {
+    // flattenを呼び出す
+    // shallowの謎は時間の都合上調べていない
     return flatten(array, shallow, []);
   };
 
   // Return a version of the array that does not contain the specified value(s).
+  // 渡した配列から、第２引数から指定した値を取り除いた配列を返す
   _.without = function(array) {
+    // _.difference は array から 第2引数で渡した配列の要素を取り除いた配列を返す
+    // _.without の指定方法を配列に置き換えたバージョン ( call と apply の関係みたいな )
     return _.difference(array, slice.call(arguments, 1));
   };
 
@@ -757,8 +813,14 @@ var odds = _.reject([1, 2, 3, 4, 5, 6], function(num){ return num % 2 == 0; });
 
   // Take the difference between one array and a number of other arrays.
   // Only the elements present in just the first array will remain.
+  // 第１引数に渡した配列から、第２引数で渡した配列の要素を取り除く
   _.difference = function(array) {
+    // ArrayProto は 元々ある javascript のArrayオブジェクト
+    // ただ、sliceすればよいのではと思うけど、よくわがんね
     var rest = concat.apply(ArrayProto, slice.call(arguments, 1));
+    // _.filter でその名の通りフィルターをかける
+    // _.contains は渡した配列内に、第２引数で指定した値が入っていれば true を返す
+    // なので、今回の場合は array から一つずつrestに対して contains して、その値が異なればOKという感じ
     return _.filter(array, function(value){ return !_.contains(rest, value); });
   };
 
