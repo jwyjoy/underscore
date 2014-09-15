@@ -751,7 +751,8 @@ var odds = _.reject([1, 2, 3, 4, 5, 6], function(num){ return num % 2 == 0; });
   // 三次元から二次元に行きたい(願望
   _.flatten = function(array, shallow) {
     // flattenを呼び出す
-    // shallowの謎は時間の都合上調べていない
+    // shallowをtrueに指定すると、arrayが全て配列かどうか調べた後、concatで1階層だけについて処理を行う
+    // http://underscorejs.org/#flatten
     return flatten(array, shallow, []);
   };
 
@@ -765,7 +766,11 @@ var odds = _.reject([1, 2, 3, 4, 5, 6], function(num){ return num % 2 == 0; });
 
   // Split an array into two arrays: one whose elements all satisfy the given
   // predicate, and one whose elements all do not satisfy the predicate.
+  // 渡した配列をpredicateで評価した後、評価結果で分割した配列として返す
+  // _.partition([0,1,2,3,4,5], isOdd);
+  // => [[1,3,5],[0,2,4]]
   _.partition = function(array, predicate) {
+    // predicateでtrueならpassに、falseならfailの配列に追加される
     var pass = [], fail = [];
     each(array, function(elem) {
       (predicate(elem) ? pass : fail).push(elem);
@@ -776,16 +781,25 @@ var odds = _.reject([1, 2, 3, 4, 5, 6], function(num){ return num % 2 == 0; });
   // Produce a duplicate-free version of the array. If the array has already
   // been sorted, you have the option of using a faster algorithm.
   // Aliased as `unique`.
+  // 渡した配列の要素の重複を取り除く
+  // 配列がソートされている場合にisSortedをtrueにすると、処理が速くなる
+  // iteratorを指定すると、重複を取り除く前にarrayの各要素にiteratorを適応する
   _.uniq = _.unique = function(array, isSorted, iterator, context) {
+    // isSortedを指定せずにiterator以下を指定したい場合に、引数をずらす
     if (_.isFunction(isSorted)) {
       context = iterator;
       iterator = isSorted;
       isSorted = false;
     }
+    // 処理対象の配列に対して、iteratorが指定してあるならmapで処理する
+    // iteratorを指定していないならarrayそのまま
     var initial = iterator ? _.map(array, iterator, context) : array;
     var results = [];
     var seen = [];
     each(initial, function(value, index) {
+      // isSortedがtrueなら処理速度の速いアルゴリズムで計算する (アルゴリズムの中身はそうなのかぁ程度に見る
+      // falseならseenの中にvalueがあるかどうかをcontainsで見る
+      // 無ければseenに追加しつつ、resultsにも追加する
       if (isSorted ? (!index || seen[seen.length - 1] !== value) : !_.contains(seen, value)) {
         seen.push(value);
         results.push(array[index]);
@@ -796,7 +810,9 @@ var odds = _.reject([1, 2, 3, 4, 5, 6], function(num){ return num % 2 == 0; });
 
   // Produce an array that contains the union: each distinct element from all of
   // the passed-in arrays.
+  // arraysの和集合を取る (重複を取り除いた形
   _.union = function() {
+    // _.flattenでconcatしつつ、_.uniqで重複を取り除く
     return _.uniq(_.flatten(arguments, true));
   };
 
