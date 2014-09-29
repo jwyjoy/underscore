@@ -845,9 +845,20 @@ var odds = _.reject([1, 2, 3, 4, 5, 6], function(num){ return num % 2 == 0; });
   // @meijin
   // Zip together multiple lists into a single array -- elements that share
   // an index go together.
+  // 複数の配列をindex毎にまとめる
+  // _.zip(['moe', 'larry', 'curly'], [30, 40, 50], [true, false, false]);
+  // => [["moe", 30, true], ["larry", 40, false], ["curly", 50, false]]
   _.zip = function() {
+    // 渡された配列で大きさの最大値を取る
+    // 1. _.pluckでargumentsのlengthプロパティにアクセスして取ってくる
+    // 2. lengthの配列にconcatで0を追加
+    // 3. _.maxで最大のlengthを取ってくる
     var length = _.max(_.pluck(arguments, 'length').concat(0));
+
+    // 一番大きい配列と同じ大きさのresults配列を作る
     var results = new Array(length);
+
+    // _.pluckで各index毎にアクセスして、それをresultsに格納していく
     for (var i = 0; i < length; i++) {
       results[i] = _.pluck(arguments, '' + i);
     }
