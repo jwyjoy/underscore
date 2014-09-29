@@ -918,24 +918,45 @@ var odds = _.reject([1, 2, 3, 4, 5, 6], function(num){ return num % 2 == 0; });
     return -1;
   };
 
-  // kono
+  // kono => kosuki
   // Generate an integer Array containing an arithmetic progression. A port of
   // the native Python `range()` function. See
   // [the Python documentation](http://docs.python.org/library/functions.html#range).
+  // startからstopまでstepずつ増加(または減少)する整数のリストを作る。
+  // startのデフォルト値は0。stepのデフォルト値は1。
+  // 例：
+  // range(10) = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9]
+  // range(1, 11) = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10]
+  // range(0, 30, 5) = [0, 5, 10, 15, 20, 25]
+  // range(0, 10, 3) = [0, 3, 6, 9]
+  // range(0, -10, -1) = [0, -1, -2, -3, -4, -5, -6, -7, -8, -9]
+  // range(0) = []
+  // range(1, 0) = []
   _.range = function(start, stop, step) {
+    // argumentsは関数を定義したときに自動的に定義されるオブジェクト
+    // ただのlengthプロパティを持つオブジェクト
+    // 詳しい説明は前に高橋くんがしてくれた。
+    // 引数の数が1以下の場合の例外処理
     if (arguments.length <= 1) {
-      stop = start || 0;
+      stop = start || 0; // 引数が1個ならば、引数がstopの値になる. 引数が0個ならば、startもstopも0の値
       start = 0;
     }
+    
+    // 引数の3番目の値があるならば、それがstepの値になる
+    // 無いならば、step=1のデフォルト値
     step = arguments[2] || 1;
 
+    // Math.max：引数として与えた複数の数の中で最大の数を返す
+    // Math.ceil：引数として与えた数以上の最小の整数を返す
+    // 配列の要素数を計算している
     var length = Math.max(Math.ceil((stop - start) / step), 0);
     var idx = 0;
-    var range = new Array(length);
+    var range = new Array(length); //返す配列の宣言
 
+    // 実際に配列を作る
     while(idx < length) {
-      range[idx++] = start;
-      start += step;
+      range[idx++] = start; // idx++：この行の処理をしたあとで、idx+1を行っている
+      start += step;        // 次にrangeに入れる数を計算
     }
 
     return range;
