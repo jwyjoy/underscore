@@ -816,6 +816,7 @@ var odds = _.reject([1, 2, 3, 4, 5, 6], function(num){ return num % 2 == 0; });
     return _.uniq(_.flatten(arguments, true));
   };
 
+  // @kono
   // Produce an array that contains every item shared between all the
   // passed-in arrays.
   _.intersection = function(array) {
@@ -827,6 +828,7 @@ var odds = _.reject([1, 2, 3, 4, 5, 6], function(num){ return num % 2 == 0; });
     });
   };
 
+  // @kosuki
   // Take the difference between one array and a number of other arrays.
   // Only the elements present in just the first array will remain.
   // 第１引数に渡した配列から、第２引数で渡した配列の要素を取り除く
@@ -840,6 +842,7 @@ var odds = _.reject([1, 2, 3, 4, 5, 6], function(num){ return num % 2 == 0; });
     return _.filter(array, function(value){ return !_.contains(rest, value); });
   };
 
+  // @meijin
   // Zip together multiple lists into a single array -- elements that share
   // an index go together.
   _.zip = function() {
@@ -851,6 +854,7 @@ var odds = _.reject([1, 2, 3, 4, 5, 6], function(num){ return num % 2 == 0; });
     return results;
   };
 
+  // @takano
   // Converts lists into objects. Pass either a single array of `[key, value]`
   // pairs, or two parallel arrays of the same length -- one of keys, and one of
   // the corresponding values.
@@ -867,6 +871,7 @@ var odds = _.reject([1, 2, 3, 4, 5, 6], function(num){ return num % 2 == 0; });
     return result;
   };
 
+  // @fad
   // If the browser doesn't supply us with indexOf (I'm looking at you, **MSIE**),
   // we need this function. Return the position of the first occurrence of an
   // item in an array, or -1 if the item is not included in the array.
@@ -889,6 +894,7 @@ var odds = _.reject([1, 2, 3, 4, 5, 6], function(num){ return num % 2 == 0; });
     return -1;
   };
 
+  // jang
   // Delegates to **ECMAScript 5**'s native `lastIndexOf` if available.
   _.lastIndexOf = function(array, item, from) {
     if (array == null) return -1;
@@ -901,6 +907,7 @@ var odds = _.reject([1, 2, 3, 4, 5, 6], function(num){ return num % 2 == 0; });
     return -1;
   };
 
+  // kono
   // Generate an integer Array containing an arithmetic progression. A port of
   // the native Python `range()` function. See
   // [the Python documentation](http://docs.python.org/library/functions.html#range).
