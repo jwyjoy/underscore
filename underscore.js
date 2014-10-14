@@ -941,7 +941,7 @@ var odds = _.reject([1, 2, 3, 4, 5, 6], function(num){ return num % 2 == 0; });
       stop = start || 0; // 引数が1個ならば、引数がstopの値になる. 引数が0個ならば、startもstopも0の値
       start = 0;
     }
-    
+
     // 引数の3番目の値があるならば、それがstepの値になる
     // 無いならば、step=1のデフォルト値
     step = arguments[2] || 1;
@@ -962,9 +962,14 @@ var odds = _.reject([1, 2, 3, 4, 5, 6], function(num){ return num % 2 == 0; });
     return range;
   };
 
+
+
+
   // Function (ahem) Functions
   // ------------------
 
+
+  // @takahashi
   // Reusable constructor function for prototype setting.
   var ctor = function(){};
 
@@ -987,6 +992,7 @@ var odds = _.reject([1, 2, 3, 4, 5, 6], function(num){ return num % 2 == 0; });
     };
   };
 
+  // @takano
   // Partially apply a function by creating a version that has had some of its
   // arguments pre-filled, without changing its dynamic `this` context. _ acts
   // as a placeholder, allowing any combination of arguments to be pre-filled.
@@ -1003,6 +1009,7 @@ var odds = _.reject([1, 2, 3, 4, 5, 6], function(num){ return num % 2 == 0; });
     };
   };
 
+  // @kono
   // Bind a number of an object's methods to that object. Remaining arguments
   // are the method names to be bound. Useful for ensuring that all callbacks
   // defined on an object belong to it.
@@ -1013,6 +1020,7 @@ var odds = _.reject([1, 2, 3, 4, 5, 6], function(num){ return num % 2 == 0; });
     return obj;
   };
 
+  // @kono
   // Memoize an expensive function by storing its results.
   _.memoize = function(func, hasher) {
     var memo = {};
@@ -1023,6 +1031,7 @@ var odds = _.reject([1, 2, 3, 4, 5, 6], function(num){ return num % 2 == 0; });
     };
   };
 
+  // @kosuki
   // Delays a function for the given number of milliseconds, and then calls
   // it with the arguments supplied.
   _.delay = function(func, wait) {
@@ -1030,12 +1039,14 @@ var odds = _.reject([1, 2, 3, 4, 5, 6], function(num){ return num % 2 == 0; });
     return setTimeout(function(){ return func.apply(null, args); }, wait);
   };
 
+  // @kosuki
   // Defers a function, scheduling it to run after the current call stack has
   // cleared.
   _.defer = function(func) {
     return _.delay.apply(_, [func, 1].concat(slice.call(arguments, 1)));
   };
 
+  // @fad
   // Returns a function, that, when invoked, will only be triggered at most once
   // during a given window of time. Normally, the throttled function will run
   // as much as it can, without ever going more than once per `wait` duration;
@@ -1071,6 +1082,7 @@ var odds = _.reject([1, 2, 3, 4, 5, 6], function(num){ return num % 2 == 0; });
     };
   };
 
+  // @jang
   // Returns a function, that, as long as it continues to be invoked, will not
   // be triggered. The function will be called after it stops being called for
   // N milliseconds. If `immediate` is passed, trigger the function on the
@@ -1149,6 +1161,8 @@ var odds = _.reject([1, 2, 3, 4, 5, 6], function(num){ return num % 2 == 0; });
       }
     };
   };
+
+
 
   // Object Functions
   // ----------------
