@@ -1034,14 +1034,21 @@ var odds = _.reject([1, 2, 3, 4, 5, 6], function(num){ return num % 2 == 0; });
   // @kosuki
   // Delays a function for the given number of milliseconds, and then calls
   // it with the arguments supplied.
+  // 指定ミリ秒後に関数を実行する
+  // 例：var log = _.bind(console.log, console);
+  //     _.delay(log, 1000, 'logged later'); 
+  //     1秒後に'logged later'を引数にしたlogを実行する
   _.delay = function(func, wait) {
-    var args = slice.call(arguments, 2);
-    return setTimeout(function(){ return func.apply(null, args); }, wait);
+    var args = slice.call(arguments, 2); //引数の3番目以降があれば、実行する関数の引数とする
+    
+    // setTimeoutは指定されたミリ秒後に指定された処理を実行する関数。
+    return setTimeout(function(){ return func.apply(null, args); }, wait); 
   };
 
   // @kosuki
   // Defers a function, scheduling it to run after the current call stack has
   // cleared.
+  // コールスタックが空になるまで、関数の呼び出しを遅延させる
   _.defer = function(func) {
     return _.delay.apply(_, [func, 1].concat(slice.call(arguments, 1)));
   };
