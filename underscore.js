@@ -1094,6 +1094,19 @@ var odds = _.reject([1, 2, 3, 4, 5, 6], function(num){ return num % 2 == 0; });
   // be triggered. The function will be called after it stops being called for
   // N milliseconds. If `immediate` is passed, trigger the function on the
   // leading edge, instead of the trailing.
+  /*
+  例1
+    $('a.some_class').on('click', _.debounce(function(e){
+        console.log('clicked!');
+    }, 500, true));
+
+    immediateが falseだと 500ミリセカンド後に実行 
+    immediateが trueだと関数はすぐに実行されて、500ミリセカンドをまつ。
+
+    androidのcountdownlatchみたいな感じ
+
+    Double Clickとか連続でクリックされないようにする関数
+  */
   _.debounce = function(func, wait, immediate) {
     var timeout, args, context, timestamp, result;
 
